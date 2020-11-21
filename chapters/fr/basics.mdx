@@ -1,0 +1,29 @@
+---
+title: Notions de base
+---
+
+Les moteurs d'expressions régulières attendent généralement le format `/<motifs>/<drapeaux>`, néanmoins, les slashs et les "drapeaux" (ou "_flags_" en Anglais) sont souvent omis par soucis de concision. Nous reviendrons en détails sur ces drapeaux [plus tard](flags).
+
+Commençons par une expressions régulière minimale : `/p/g` et mettons de côté le [drapeau `g`](flags#global-g) pour l'instant.
+
+<Example regex={/p/g}>
+    <li>pancake</li>
+    <li>pineapple</li>
+    <li>apple</li>
+    <li>mango</li>
+    <li>Plum</li>
+</Example>
+
+Comme nous pouvons le voir, `/p/g` décrit toutes les lettres `p` en minuscule.
+
+<Note>Par défaut, les expressions régulières sont sensibles à la casse.</Note>
+
+En modifiant légèrement l'expression régulière en `/pp/g`, nous pouvons constater que seuls les ensembles de deux `p` consécutifs sont valides :
+
+<Example regex={/pp/g}>
+    <li>apple</li>
+    <li>pineapple</li>
+    <li>happiness</li>
+    <li>sipping apple juice</li>
+    <li>papaya</li>
+</Example>
