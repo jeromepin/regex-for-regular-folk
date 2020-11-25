@@ -1,0 +1,111 @@
+---
+title: Ensemble de caractères communs
+---
+
+Certains échappements de caractères sont des raccourcies pour des classes de caractères communes.
+
+## Chiffres décimaux — `\d`
+
+Le raccourci `\d` correspond aux caractères représentant les chiffres décimaux, de `0` à `9`. Il s'agit de l'équivalent de la classe de caractères `[0-9]`.
+
+<Example regex={/\d/g}>
+    <li>2020</li>
+    <li>100/100</li>
+    <li>It costs $5.45</li>
+    <li>3.14159</li>
+</Example>
+
+<Example regex={/\d\d/g}>
+    <li>2020</li>
+    <li>100/100</li>
+    <li>It costs $5.45</li>
+    <li>3.14159</li>
+</Example>
+
+<Note>
+    Bien que <code>59</code> soit également une paire de chiffres, la majorité des moteurs d'expressions régulières{" "}
+    cherchent des correspondaces qui <em>ne se chevauchent pas</em> de gauche à droit par défaut.
+</Note>
+
+`\D` est l'inverse de `\d` et l'équivalent de `[^0-9]`.
+
+<Example regex={/\D/g}>
+    <li>2020</li>
+    <li>100/100</li>
+    <li>It costs $5.45</li>
+    <li>3.14159</li>
+</Example>
+
+## Caractères alphanumériques (et "_") — `\w`
+
+Le raccourci `\w` correspond aux caractères alphanumériques. Ceux-ci sont :
+-   alphabet miniscule — `a`–`z`
+-   alphabet majuscule — `A`–`Z`
+-   chiffres décimaux — `0`–`9`
+-   tiret bas (_underscore_) — `_`
+
+Ce raccourci est l'équivalent de la classe de caractères `[a-zA-Z0-9_]`.
+
+<Example regex={/\w/g}>
+    <li>john_s</li>
+    <li>matej29</li>
+    <li>Ayesha?!</li>
+    <li>4952</li>
+    <li>LOUD</li>
+    <li>lo-fi</li>
+    <li>get out</li>
+    <li>21*2 = 42(1)</li>
+</Example>
+
+<Example regex={/\W/g}>
+    <li>john_s</li>
+    <li>Ayesha?!</li>
+    <li>4952</li>
+    <li>LOUD</li>
+    <li>lo-fi</li>
+    <li>get out</li>
+    <li>;-;</li>
+    <li>21*2 = 42(1)</li>
+</Example>
+
+## Caractères d'espacement — `\s`
+
+Le raccourci `\s` correspond aux caractères d'espacement. L'ensemble exact des caractères correspondant est dépendant du moteur d'expressions régulières. La majorité inclus au moins :
+-   espace
+-   tabulation — `\t`
+-   retour charriot — `\r`
+-   _line feed_ — `\n`
+-   _form feed_ — `\f`
+
+De nombreux moteurs inclus également les tabulations verticales (`\v`). Les moteurs prenant en compte l'Unicode inclus tous les caractères de la catégorie "Séparateur".
+
+Les détails techniques ne seront toutefois pas important dans la majorité des cas.
+
+<Example regex={/\s/g}>
+    <li>word word</li>
+    <li>tabs vs spaces</li>
+    <li>snake_case.jpg</li>
+</Example>
+
+<Example regex={/\S/g}>
+    <li>word word</li>
+    <li>tabs vs spaces</li>
+    <li>snake_case.jpg</li>
+</Example>
+
+## N'importe quel caractère — `.`
+
+Bien que n'étant de la forme usuelle des raccourcis vus jusqu'à présent, `.` correspond à n'importe quel[^1] caractère.
+
+<Example regex={/./g}>
+    <li>john_s</li>
+    <li>Ayesha?!</li>
+    <li>4952</li>
+    <li>LOUD</li>
+    <li>lo-fi</li>
+    <li>get out</li>
+    <li>;-;</li>
+    <li>21*2 = 42(1)</li>
+</Example>
+
+[^1]: À l'exception du caractère _line feed_ `\n`. Ceci peut être changé en utilisant le ["dotAll" attribut (_flag_)](flags#dot-all-s), si cela est supporté par le moteur de _regex_ en question.

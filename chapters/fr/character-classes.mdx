@@ -1,0 +1,92 @@
+---
+title: Classes de caractères
+---
+
+Il est possible de faire correspondre un caractère parmi un ensemble de caractères.
+
+<Example regex={/[aeiou]/g}>
+    <li>avocado</li>
+    <li>brinjal</li>
+    <li>onion</li>
+    <li>rhythm</li>
+</Example>
+
+`/[aeiou]/g` correspond à toutes les voyelles présentes dans nos chaines de caractères fournies.
+
+Voici un autre exemple :
+
+<Example regex={/p[aeiou]t/g}>
+    <li>pat</li>
+    <li>pet</li>
+    <li>pit</li>
+    <li>spat</li>
+    <li>spot a pet</li>
+    <li>bat</li>
+</Example>
+
+Nous faisons correspondre un `p`, suivi d'une des voyelles, suivi par un `t`.
+
+Voici un raccourci intuitif pour faire correspondre un caractère parmi un ensemble continu.
+
+<Example regex={/[a-z]/g}>
+    <li>john_s</li>
+    <li>matej29</li>
+    <li>Ayesha?!</li>
+    <li>4952</li>
+    <li>LOUD</li>
+</Example>
+<Warning>
+    La _regex_ <code>/[a-z]/g</code> ne _match_ qu'un seul caractère. Dans l'exemple
+    ci-dessus, les chaines de caractères ont{" "}
+    <em>plusieurs correspondances chacune d'un seul caractère uniquement</em>.
+    Aucune ne fourni une correspondance complète.
+</Warning>
+
+On peut combiner les intervales et les caractères indiviudels dans nos expressions régulières.
+
+<Example regex={/[A-Za-z0-9_-]/g}>
+    <li>john_s</li>
+    <li>matej29</li>
+    <li>Ayesha?!</li>
+    <li>4952</li>
+    <li>LOUD</li>
+</Example>
+
+Notre expression régulière `/[A-Za-z0-9_-]/g` ne correspond qu'à un seul caractère, qui doit être (au moins) l'un des suivants :
+
+-   parmi `A-Z`
+-   parmi `a-z`
+-   parmi `0-9`
+-   `_` ou `-`.
+
+We can also "negate" these rules:
+On peut également utiliser l'inverse de ces règles :
+<Example regex={/[^aeiou]/g}>
+    <li>Umbrella</li>
+    <li>cauliflower</li>
+    <li>ou</li>
+</Example>
+
+La seule différence entre la première expression régulière du chapitre et `/[^aeiou]/g` est le `^` directement après le crochet ouvrant. Le but est d'inverse les règles définies au sein des crochets. La notion d'inverse est à comprendre comme une définition par exclusion. Maintenant l'expression régulière se comprend comme suit : 
+
+> "Fais correpondre n'importe quel caractère qui _n'est pas_ parmi `a`, `e`, `i`, `o` et `u`"
+
+## Exemples
+
+### Carcatères interdits pour des noms d'utilisateurs
+
+<Example regex={/[^a-zA-Z_0-9-]/g}>
+    <li>TheLegend27</li>
+    <li>WaterGuy12</li>
+    <li>Smokie_Bear</li>
+    <li>Robert'); DROP TABLE Students;--</li>
+</Example>
+
+### Caractères se discernant sans ambiguité 
+
+<Example regex={/[A-HJ-NP-Za-kmnp-z2-9]/g}>
+    <li>foo</li>
+    <li>lily</li>
+    <li>lI0O1</li>
+    <li>unambiguity</li>
+</Example>

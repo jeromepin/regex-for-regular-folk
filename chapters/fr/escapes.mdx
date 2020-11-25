@@ -1,0 +1,112 @@
+---
+title: Échappements de caractères
+---
+
+Au sein des _regex_, certains caractères possèdent une signification particulière comme nous allons le décrouvrir dans les chapitres à venir:
+-   `|`
+-   `{`, `}`
+-   `(`, `)`
+-   `[`, `]`
+-   `^`, `$`
+-   `+`, `*`, `?`
+-   `\`
+-   `.` — Interprété littéralement uniquement au sein des classes de caractères.[^1]
+-   `-` — _Parfois_ considéré comme un caractère spécial au sein des classes de caractères.
+
+[^1]: De nombreux caractères spéciaux qui pourraient avoir une signification particulière autrement sont traités de manière littérale par défaut au sein des classes de caractères.
+
+---
+
+Lorsque qu'on souhaite _match_ ces caractères _littéralement_, nous devons les échapper.
+
+Pour ce faire, il suffit de **préfixer le caractère par `\`**.
+
+---
+
+<Example regex={/\(paren\)/g}>
+    <li>paren</li>
+    <li>parents</li>
+    <li>(paren)</li>
+    <li>a (paren)</li>
+</Example>
+
+<Example regex={/(paren)/g}>
+    <li>paren</li>
+    <li>parents</li>
+    <li>(paren)</li>
+    <li>a (paren)</li>
+</Example>
+
+---
+
+<Example regex={/example\.com/g}>
+    <li>example.com</li>
+    <li>a.example.com/foo</li>
+    <li>example_com</li>
+    <li>example@com</li>
+    <li>example_com/foo</li>
+</Example>
+
+<Example regex={/example.com/g}>
+    <li>example.com</li>
+    <li>a.example.com/foo</li>
+    <li>example_com</li>
+    <li>example@com</li>
+    <li>example_com/foo</li>
+</Example>
+
+---
+
+<Example regex={/A\+/g}>
+    <li>A+</li>
+    <li>A+B</li>
+    <li>5A+</li>
+    <li>AAA</li>
+</Example>
+
+<Example regex={/A+/g}>
+    <li>A+</li>
+    <li>A+B</li>
+    <li>5A+</li>
+    <li>AAA</li>
+</Example>
+
+---
+
+<Example regex={/worth \$5/g}>
+    <li>worth $5</li>
+    <li>worth $54</li>
+    <li>not worth $5</li>
+</Example>
+
+<Example regex={/worth $5/g}>
+    <li>worth $5</li>
+    <li>worth $54</li>
+    <li>not worth $5</li>
+</Example>
+
+## Exemples
+
+### Commentaires en Javascript
+
+<Example regex={/\/\/.*/g}>
+    <li>console.log(); // comment</li>
+    <li>console.log(); // // comment</li>
+    <li>console.log();</li>
+</Example>
+
+### Sous-chaîne de caractères entourée d'astérisques
+
+<Example regex={/\*[^\*]*\*/g}>
+    <li>here be *italics*</li>
+    <li>permitted**</li>
+    <li>a*b*c*d</li>
+    <li>a*b*c*d*e</li>
+    <li>a️bcd</li>
+</Example>
+
+La première et dernière astérisques sont interprétées de manière littérale vu qu'elles ont été échappées — `\*`. 
+
+L'astérisque au sein de la classe de caractères n'a pas spécialement besoin d'être échappée[^1], je l'ai fait quand même pour une question de clarté.
+
+L'astérisque suivant directement la classe de caractères indiquent [la répétition de la classe de caractères](repetition#zero-or-more) que nous verrons dans les chaptires qui suivent.
