@@ -1,0 +1,212 @@
+---
+title: Répétition
+---
+
+La répétition est une charactéristique puissante et omniprésente des expressions régulières. Il existe plusieurs manières de repésenter la répétition.
+
+## Rendre certains éléments optionnels
+
+On peut rendre certains éléments d'une expression régulière optionnel en utiliant l'opérateur `?`.
+
+<Example regex={/a?/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+Voici un autre exemple :
+
+<Example regex={/https?/g}>
+    <li>http</li>
+    <li>https</li>
+    <li>http/2</li>
+    <li>shttp</li>
+    <li>ftp</li>
+</Example>
+
+Dans l'exemple ci-dessus, le `s` suivant `http` est optionel.
+
+Il est également possible de rendre optionnel les groupes de capture.
+
+<Example regex={/url: (www\.)?example\.com/g}>
+    <li>url: example.com</li>
+    <li>url: www.example.com/foo</li>
+    <li>Here's the url: example.com.</li>
+</Example>
+
+## Zéro ou plusieurs fois
+
+Si on souhaite capturer zéro ou plusieurs un élément, on lui ajoute le suffixe `*`.
+
+<Example regex={/a*/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+L'expression régulière de l'exemple capture même la chaine de caractère vide `""`.
+
+## Une ou plusieurs fois
+
+Si on souhaite capturer une ou plusieurs fois un élément, on lui ajoute le suffixe `+`.
+
+<Example regex={/a+/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+## Exactement `x` fois
+
+Si on souhaite capter un élément en particulier exactement `x` fois, on peut lui ajouter le suffixe `{x}`. C'est techniquement identique que de répéter en copiant/collant l'élément `x` fois.
+
+<Example regex={/a{3}/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+Voici un example qui capture un code couleur en hexadéciaml d'une longueur de 6 caractères.
+
+<Example regex={/#[0-9A-F]{6}/g}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>How about #73FA79?</li>
+    <li>Part of #73FA79BAC too</li>
+    <li>#FFF</li>
+    <li>#a2ca2c</li>
+</Example>
+
+Ici, l'élément `{6}` s'applique à la classe de caractère `[0-9A-F]`.
+
+## Entre `min` et `max` fois
+
+Si on souhaite capturer un élément en particulier entre `min` et `max` (inclus) fois, on peut lui ajotuer le suffixe `{min,max}`.
+
+<Example regex={/a{2,4}/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+<Warning>
+    Il ne peut pas y avoir d'espaces après la virgule dans <code>{"{min,max}"}</code>.
+</Warning>
+
+## Au moins `x` fois
+
+Si on souhaite capturer un élément en particulier au moins `x` fois, on peut lui ajouter le suffixe `{x,}`. On peut le concevoir comme [`{min,max}`](#between-min-and-max-times) sans la limite supérieure.
+
+<Example regex={/a{2,}/g}>
+    <li></li>
+    <li>a</li>
+    <li>aa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+## Une note sur le caractère glouton des opérateurs
+
+Les opérateurs de répétitions sont, par défaut, gloutons. Ils tentent de faire correspondre autant d'éléments que possibles.
+
+<Example regex={/a*/g}>
+    <li>aaa</li>
+    <li>aaaa</li>
+    <li>aaaaa</li>
+</Example>
+
+`*` peut capturer zéro ou plusieurs fois `a`. Dans chacune des chaines de caractères d'exemple, il ne pourrait capturer aucun `a`. Toutefois, il en capture autant que possible.
+
+---
+
+<Example regex={/a{2,4}/g}>
+    <li>aaaaa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+</Example>
+
+Ajouter `?` à un opérateur de répétition le rend "paresseux".
+
+<Example regex={/a{2,4}?/g}>
+    <li>aaaaa</li>
+    <li>aaa</li>
+    <li>aaaa</li>
+</Example>
+
+<Warning>
+    Le suffixe <code>?</code> est différent de{" "}
+    <a href="#making-things-optional">
+    	l'opérateur de répétition <code>?</code>
+    </a>
+    .
+</Warning>
+
+---
+
+<Example regex={/".*"/g}>
+    <li>"quote"</li>
+    <li>"quote", "quote"</li>
+    <li>"quote"quote"</li>
+</Example>
+
+<Example regex={/".*?"/g}>
+    <li>"quote"</li>
+    <li>"quote", "quote"</li>
+    <li>"quote"quote"</li>
+</Example>
+
+Maintenant, `.*` ne capture plus que le minimum nécessaire pour permettre une correspondance.[^1]
+
+> […] [un opérateur] paresseux s'arrêtera _dès que la condition est satisfaite_, mais [un opérateur] glouton ne s'arrêtera que _lorsque la condition n'est plus satisfaite_.
+>
+> —[Andrew S](https://stackoverflow.com/users/966656/andrew-s) on Stack Overflow
+
+<Example regex={/<.+>/g}>
+    <li>{"<em>g r e e d y</em>"}</li>
+</Example>
+
+<Example regex={/<.+?>/g}>
+    <li>{"<em>lazy</em>"}</li>
+</Example>
+
+## Exemples
+
+### Adresses Bitcoin
+
+<Example regex={/([13][a-km-zA-HJ-NP-Z0-9]{26,33})/g}>
+    <li>3Nxwenay9Z8Lc9JBiywExpnEFiLp6Afp8v</li>
+    <li>1HQ3Go3ggs8pFnXuHVHRytPCq5fGG8Hbhx</li>
+    <li>2016-03-09,18f1yugoAJuXcHAbsuRVLQC9TezJ</li>
+</Example>
+
+### Vidéo YouTube
+
+<Example
+    regex={/(?:https?:\/\/)?(?:www\.)?youtube\.com\/watch\?.*?v=([^&\s]+).*/gm}
+>
+    <li>youtube.com/watch?feature=sth&v=dQw4w9WgXcQ</li>
+    <li>https://www.youtube.com/watch?v=dQw4w9WgXcQ</li>
+    <li>www.youtube.com/watch?v=dQw4w9WgXcQ</li>
+    <li>youtube.com/watch?v=dQw4w9WgXcQ</li>
+    <li>fakeyoutube.com/watch?v=dQw4w9WgXcQ</li>
+</Example>
+
+Il est possible d'ajuster notre _regex_ afin de ne pas faire correspondre le dernier lien problématique utilisant des [ancres](anchors). On en reparlera très bientôt !
+
+[^1]: Dans cet exemple, il est également possible d'utiliser `/"[^"]*"/g` qui est préféré.
