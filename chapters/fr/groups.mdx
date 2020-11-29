@@ -1,0 +1,200 @@
+---
+title: Groupes
+---
+
+Les groupes — comme leur nom l'indique — sont utilisés pour "grouper" ensemble différents éléments d'une même expression régulière.
+Ces groupes peuvent êtres utilisés par exemple pour :
+
+-   Extraire une partie d'une correspondance
+-   [Répéter un ensemble de caractères plusieurs fois](repetition)
+-   Se référer à une sous-chaîne
+-   Faciliter la lecture
+-   Permettre d'exprimer des [alternatives](alternation)
+
+## Groupes capturants
+
+Les groupes capturants (en Anglais "_capturing groups_") sont notés entre parenthèses : `(` … `)`. Voici un example simple d'utilisation :
+
+<Example regex={/a(bcd)e/g}>
+    <li>abcde</li>
+    <li>abcdefg?</li>
+    <li>abcde</li>
+</Example>
+
+Les groupes capturants permettent d'extraire et de réutiliser un groupe au sein d'une correspondance.
+
+<Example regex={/\{([^{}]*)\}/g}>
+    <li>{"{braces}"}</li>
+    <li>{"{two} {pairs}"}</li>
+    <li>{"{ {nested} }"}</li>
+    <li>{"{ incomplete } }"}</li>
+    <li>{"{}"}</li>
+    <li>{"{unmatched"}</li>
+</Example>
+
+En passant cette expression régulière à votre langage de programmation favori, vous seriez en mesure d'extraire le texte situé entre les accolades pour chacune des chaînes de caractères correspondantes.
+
+Les groupes capturants peuvent aussi être utilisés pour [répéter](repetition) facilement le-dit groupe :
+
+<Example regex={/a(bcd)+e/g}>
+    <li>abcdefg</li>
+    <li>abcdbcde</li>
+    <li>abcdbcdbcdef</li>
+    <li>ae</li>
+</Example>
+
+Ils servent aussi à grouper des parties d'une expression régulière pour an faciliter la lisibilité :
+
+<Example regex={/(\d\d\d\d)-W(\d\d)/g}>
+    <li>2020-W12</li>
+    <li>1970-W01</li>
+    <li>2050-W50-6</li>
+    <li>12050-W50</li>
+</Example>
+
+<Note>La notation `\d` correspond à un chiffre et est équivalent à `[0-9]`.</Note>
+
+
+### Références arrières
+
+Les références arrières (de l'Anglais "_backreferences_") permettent de faire référence — au sein d'une même expression régulière — à un groupe précédemment capturé.
+
+La première correspondance au sein d'une expression régulière sera notée `\1`, la seconde `\2` et ainsi de suite…
+
+<Example regex={/([abc])=\1=\1/g}>
+    <li>a=a=a</li>
+    <li>ab=b=b</li>
+    <li>a=b=c</li>
+</Example>
+
+Cependant, les références arrière ne peuvent pas être utilisées pour réduire une duplication au sein d'une expression régulière. Elles référent à la correspondance elle-même et pas au motif :
+
+<Example regex={/[abc][abc][abc]/g}>
+    <li>abc</li>
+    <li>a cable</li>
+    <li>aaa</li>
+    <li>bbb</li>
+    <li>ccc</li>
+</Example>
+
+<Example regex={/([abc])\1\1/g}>
+    <li>abc</li>
+    <li>a cable</li>
+    <li>aaa</li>
+    <li>bbb</li>
+    <li>ccc</li>
+</Example>
+
+Voici un example qui montre un cas d'usage assez courant :
+
+<Example regex={/\w+([,|])\w+\1\w+/g}>
+    <li>comma,separated,values</li>
+    <li>pipe|separated|values</li>
+    <li>wb|mixed,delimiters</li>
+    <li>wb,mixed|delimiters</li>
+</Example>
+
+Ce même résultat ne peut être obtenu en répétant naïvement le motif :
+
+<Example regex={/\w+[,|]\w+[,|]\w+/g}>
+    <li>comma,separated,values</li>
+    <li>pipe|separated|values</li>
+    <li>wb|mixed,delimiters</li>
+    <li>wb,mixed|delimiters</li>
+</Example>
+
+
+## Groupes non-capturants
+
+Les groupes non-capturants ("_Non-capturing groups_") en Anglais sont très similaires aux groupes capturants à la différence qu'ils ne permettent pas d'extraire et de réutiliser une correspondance. Ils se notent sous la forme `(?:` … `)`.
+
+Les groupes non-capturants sont généralement utilisés de paire avec les groupes capturants et permettent d'un travailler plus finement sur une expression régulière sans toutefois "capturer" une correspondance.
+
+## Examples
+
+### Paramètres d'une URL
+
+<Example regex={/^\?(\w+)=(\w+)(?:&(\w+)=(\w+))*$/g}>
+    <li></li>
+    <li>?</li>
+    <li>?a=b</li>
+    <li>?a=b&foo=bar</li>
+</Example>
+
+Nous séparons le motif correspondant à la première paire clé-valeur car cela permet d'utiliser `&` (qui marque la séparation entre les éléments) au sein du second groupe qui peut être répété.
+
+### Balises HTML
+
+Ne _jamais_ utiliser des expressions régulières pour parser du HTML/XML.[^1][^2][^3][^4]
+
+Néanmoins, l'example est intéréssant :
+
+<Example regex={/<([a-z]+)+>(.*)<\/\1>/gi}>
+    <li>{"<p>paragraph</p>"}</li>
+    <li>{"<li>list item</li>"}</li>
+    <li>{"<p><span>nesting</span></p>"}</li>
+    <li>{"<p>hmm</li>"}</li>
+    <li>{"<p><p>not clever</p></p></p>"}</li>
+</Example>
+
+[^1]: https://stackoverflow.com/a/590789
+[^2]: https://stackoverflow.com/a/6751339
+[^3]: https://blog.codinghorror.com/parsing-html-the-cthulhu-way/
+[^4]: https://web.archive.org/web/20071018202901/http://oubliette.alpha-geek.com/2004/01/12/bring_me_your_regexs_i_will_create_html_to_break_them
+
+
+### Liste de noms
+
+**Rechercher**: `\b(\w+) (\w+)\b`
+
+**Remplacer**: `$2, $1`[^5]
+
+#### Avant
+
+```
+John Doe
+Jane Doe
+Sven Svensson
+Janez Novak
+Janez Kranjski
+Tim Joe
+```
+
+#### Après
+
+```
+Doe, John
+Doe, Jane
+Svensson, Sven
+Novak, Janez
+Kranjski, Janez
+Joe, Tim
+```
+
+[^5]: Lorsqu'il s'agit de remplacer un élément, `$1`, `$2`, … sont utilisés à la place de `\1`, `\2`, … pour faire référence aux sous-chaînes capturées.
+
+### Références arrières et pluriel
+
+**Rechercher**: `\bword(s?)\b`
+
+**Remplacer**: `phrase$1`[^5]
+
+#### Avant
+
+```
+This is a paragraph with some words.
+
+Some instances of the word "word" are in their plural form: "words".
+
+Yet, some are in their singular form: "word".
+```
+
+#### Après
+
+```
+This is a paragraph with some phrases.
+
+Some instances of the phrase "phrase" are in their plural form: "phrases".
+
+Yet, some are in their singular form: "phrase".
+```
