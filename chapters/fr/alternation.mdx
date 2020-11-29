@@ -1,0 +1,77 @@
+---
+title: Alternatives
+---
+
+Les alternatives permettent de faire correspondre une expression parmi plusieurs choix, ce que ne permettent pas les [classes de caractères](character-classes) qui sont limitées à un seul caractère.
+
+Les alternatives possibles sont délimitées par le caractère `|`.
+
+<Example regex={/foo|bar|baz/g}>
+    <li>foo baz</li>
+    <li>Your food</li>
+    <li>Behind bars</li>
+</Example>
+
+---
+
+Si une partie seulement de l'expression régulière doit proposer des alternatives, il est alors nécéssaire de l'insérer dans un [groupe](groups) (capturant ou non) :
+
+<Example regex={/Try (foo|bar|baz)/g}>
+    <li>Try foo</li>
+    <li>Try bar</li>
+    <li>Try baz</li>
+    <li>Try food</li>
+</Example>
+
+---
+
+Pour obtenir une correspondance avec tous les nombres de 100 à 250:
+
+<Example regex={/1\d\d|2[0-4]\d|250/g}>
+    <li>100, 157, 199</li>
+    <li>139 + 140 = 279</li>
+    <li>201 INR</li>
+    <li>$220</li>
+    <li>250</li>
+    <li>1250</li>
+    <li>e = 2.71828182...</li>
+    <li>251</li>
+    <li>729</li>
+</Example>
+
+## Exemples
+
+### Couleurs héxadécimales
+
+Améliorons un de nos anciens exemples pour trouver les correspondances des couleurs exprimées en héxadécimal au format raccourci
+
+<Example regex={/#([0-9A-F]{6}|[0-9A-F]{3})/g}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>How about #73FA79?</li>
+    <li>Part of #73FA79BAC too</li>
+    <li>#FFF</li>
+    <li>#a2ca2c</li>
+</Example>
+
+Il est essentiel que `[0-9A-F]{6}` soit noté avant `[0-9A-F]{3}`. Dans le cas contraire:
+
+<Example regex={/#([0-9A-F]{3}|[0-9A-F]{6})/g}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>How about #73FA79?</li>
+    <li>Part of #73FA79BAC too</li>
+    <li>#FFF</li>
+    <li>#a2ca2c</li>
+</Example>
+
+<Tip>Les moteurs essayent les alternatives de la droite vers la gauche.</Tip>
+
+<Example regex={/^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$/g}>
+    <li>MMXX</li>
+    <li>VI</li>
+    <li>XX</li>
+    <li>XI</li>
+    <li>IXI</li>
+    <li>VV</li>
+</Example>
