@@ -1,0 +1,125 @@
+---
+title: Les conditions
+---
+
+<Note>Ce chapitre est en cours de rédaction.</Note>
+
+Les conditions ("_Lookarounds_" en Anglais) peuvent être utilisées pour vérifier la véracité d'un prédicat sans faire correspondre de texte.
+
+> Vous regardez seulement, vous ne vous déplacez pas.
+
+-   Test de succession ("_Lookahead_")
+    -   Positif — `(?=…)`
+    -   Négatif — `(?!…)`
+-   Test de précédence ("_Lookbehind_")
+    -   Positif — `(?<=…)`
+    -   Négatif — `(?<!…)`
+
+
+## Test de succession
+
+### Positif
+
+<Example regex={/_(?=[aeiou])/g}>
+    <li>_a</li>
+    <li>e_e</li>
+    <li>_f</li>
+</Example>
+
+Notez comment le caractère suivant le `_` n'est pas inclus dans la correspondance mais est nécéssaire pour trouver cette correspondance.
+
+<Example regex={/(.+)_(?=[aeiou])(?=\1)/g}>
+    <li>e_e</li>
+    <li>u_u</li>
+    <li>uw_uw</li>
+    <li>uw_uwa</li>
+    <li>f_f</li>
+    <li>a_e</li>
+</Example>
+
+Puisque la condition `(?=[aeiou])` ne "déplace" pas le moteur, il continue sa recherche de `(?=\1)` juste après le caractère `_`.
+
+<Example regex={/(?=.*#).*/g}>
+    <li>abc#def</li>
+    <li>#def</li>
+    <li>abc#</li>
+    <li>abcdef</li>
+</Example>
+
+
+### Négatif
+
+<Example regex={/_(?![aeiou])/g}>
+    <li>_a</li>
+    <li>e_e</li>
+    <li>_f</li>
+</Example>
+
+<Example regex={/^(?!.*#).*$/g}>
+    <li>abc#def</li>
+    <li>#def</li>
+    <li>abc#</li>
+    <li>abcdef</li>
+</Example>
+
+Sans les limites `^` et `$` la correspondance n'incluerait pas le caractère `#`.
+
+---
+
+Les tests de succession négatifs sont généralement utilisés pour empêcher certaines phrases de correspondre :
+
+<Example regex={/foo(?!bar)/g}>
+    <li>foobaz</li>
+    <li>foobarbaz</li>
+    <li>bazfoobar</li>
+</Example>
+
+<Example regex={/---(?:(?!---).)*---/g}>
+    <li>---foo---</li>
+    <li>---fo-o---</li>
+    <li>--------</li>
+</Example>
+
+
+## Test de précédence
+
+<Support>JavaScript, avant la version ES2018, ne supporte pas ce test.</Support>
+
+### Positif
+
+### Négatif
+
+
+## Exemples
+
+### Validation de mots de passe
+
+<Example regex={/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/}>
+    <li>hunter2</li>
+    <li>zsofpghedake</li>
+    <li>zsofpghedak4e</li>
+    <li>zSoFpghEdaK4E</li>
+    <li>zSoFpg!hEd!aK4E</li>
+</Example>
+
+Les test peuvent être utilisées pour vérifier _plusieurs conditions_.
+
+### Quoted strings
+
+<Example regex={/(['"])(?:(?!\1).)*\1/g}>
+    <li>foo "bar" baz</li>
+    <li>foo 'bar' baz</li>
+    <li>foo 'bat's' baz</li>
+    <li>foo "bat's" baz</li>
+    <li>foo 'bat"s' baz</li>
+</Example>
+
+Sans test de succession, le mieux que l'ont puisse faire est :
+
+<Example regex={/(['"])[^'"]*\1/g}>
+    <li>foo "bar" baz</li>
+    <li>foo 'bar' baz</li>
+    <li>foo 'bat's' baz</li>
+    <li>foo "bat's" baz</li>
+    <li>foo 'bat"s' baz</li>
+</Example>
