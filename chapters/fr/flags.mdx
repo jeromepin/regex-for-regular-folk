@@ -1,0 +1,113 @@
+---
+title: Les drapeaux
+---
+
+Les drapeaux ("_flags_" ou "_modifiers_" en Anglais) permettent de changer le "mode de fonctionnement" d'une expression régulière.
+
+Ils sont placés après le motif, à la suite du second `/` : `/motif/`.
+
+Les différents moteurs acceptent chacuns différents drapeaux. Nous allons aborder ici quelques uns des drapeaux les plus communs.
+
+## Global (`g`)
+
+Tous les exemples vus jusqu'ici avaient le drapeau `g` activé. Lorsqu'il est désactivé, l'expression régulière arrête de rechercher après la première correspondance.
+
+<Example regex={/[aeiou]/g}>
+    <li>corona</li>
+    <li>cancel</li>
+    <li>rhythm</li>
+</Example>
+
+<Example regex={/[aeiou]/}>
+    <li>corona</li>
+    <li>cancel</li>
+    <li>rhythm</li>
+</Example>
+
+## Insensibilité (`i`) à la casse
+
+Activer le drapeau `i` rend l'expression régulière insensible à la casse lors de sa recherche de correspondances.
+
+<Example regex={/#[0-9A-F]{6}/i}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>Even #a2ca2c?</li>
+    <li>#FFF</li>
+</Example>
+
+<Example regex={/#[0-9A-F]{6}/}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>Even #a2ca2c?</li>
+    <li>#FFF</li>
+</Example>
+
+<Example regex={/#[0-9A-Fa-f]{6}/}>
+    <li>#AE25AE</li>
+    <li>#663399</li>
+    <li>Even #a2ca2c?</li>
+    <li>#FFF</li>
+</Example>
+
+## Multiligne (`m`)
+
+<Support>
+    En ruby, le drapeau <code>m</code> a{" "}
+    <a href="#dot-all-s">une autre fonction</a>.
+</Support>
+
+Le drapeau `m` affecte la gestion, par l'expression régulière, de chaînes de caractères s'étendants sur plusieurs lignes (contenant donc la caractère `\n`).
+
+Par défaut, l'expression régulière `/^foo$/` ne trouverait la correspondance que de `"foo"`. Nous pourrions souhaiter quelle trouve les correspondances quand `foo` est situé au sein d'une chaîne de caractères s'étendant sur plusieurs lignes telle que `"bar\nfoo\nbaz"` :
+
+```
+bar
+foo
+baz
+```
+
+Sans le drapeau `m`, la chaîne de caractères ne serait vu que comme une seule ligne `bar\nfoo\nbaz` et l'expression régulière `/^foo$/` ne trouverait aucune correspondance. Pour que le moteur puisse prendre en considération `foo` même au sein de plusieurs lignes, le drapeau multiligne est nécéssaire.
+
+
+## _Dot-all_ (`s`)
+
+<Support>
+    Javascript, avant sa version ES2018, ne prend pas en charge ce drapeau.
+    Ruby prend en charge ce drapeau mais le note <code>m</code> à la place.
+</Support>
+
+Le caractère `.` correspond à tout sauf une nouvelle ligne. Si ce drapeau est activé, il peut aussi correspondre à une nouvelle ligne.
+
+## Unicode (`u`)
+
+Si le drapeau `u` est présent, l'expression régulière et les chaînes de caractères qui lui sont passée prennent en charge les symboles unicode. Les détails dépendent du moteur utilisé, mais voici quelques éléments notables :
+
+-   Les [classes de caractères](character-classes) peuvent correspondre à des [symboles complémentaires](https://mathiasbynens.be/notes/javascript-unicode#unicode-basics)
+-   Les [Ensemble de caractères communs](character-escapes) peuvent être notés en utilisant des symboles complémentaires et correspondre à ces symboles
+-   Le [drapeau `i`](#case-insensitive-i) peut utiliser le [_case-folding_](https://unicode.org/Public/UCD/latest/ucd/CaseFolding.txt) d'Unicode
+-   Les [séquences d'échappement pour les propriétés Unicode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Unicode_Property_Escapes) peuvent être activées
+
+
+## Mode étendu (`x`)
+
+Quand ce drapeau est appliqué, les espaces sont ignorés (à moins qu'ils ne soient échappés ou au sein d'une [classe de caractères](character-classes)). En outre, les caractères qui suivent le caractère `#` sont ignorés. Ce drapeau permet de rendre des expressions régulières complexes plus lisibles.
+
+Ainsi, nous pouvons reprendre un de nos exemples du chapitre [Exemples Avancés](advanced-examples) et le rendre plus lisible par l'ajout d'espaces et de commentaires :
+
+```regex
+^                   # start of line
+    (
+        [+-]?       # sign
+        (?=\.\d|\d) # don't match `.`
+        (?:\d+)?    # integer part
+        (?:\.?\d*)  # fraction part
+    )
+    (?:             # optional exponent part
+        [eE]
+        (
+            [+-]?   # optional sign
+            \d+     # power
+        )
+    )?
+$                   # end of line
+```
