@@ -1,0 +1,141 @@
+---
+title: Les limites
+---
+
+Les limites (parfois nommées "ancres", et nommées "_anchors_" en Anglais) ne représentent pas une correspondance mais permettent de restreindre l'endroit où une correspondance peut se trouver au sein d'une chaîne de caractères.
+
+## Le début de ligne — `^`
+
+Le caractère `^` placé au début d'une expression régulière indique que le motif ne peut correspondre qu'en début de ligne.
+
+<Example regex={/^p/g}>
+    <li>photoshop</li>
+    <li>pineapple</li>
+    <li>tap</li>
+    <li>apple</li>
+    <li>ppap</li>
+    <li>mango</li>
+</Example>
+
+## La fin de ligne — `$`
+
+Le caractère `$` placé en fin d'expression régulière indique que le motif ne peut correspondre qu'en fin de ligne.
+
+<Example regex={/p$/g}>
+    <li>photoshop</li>
+    <li>pineapple</li>
+    <li>apple</li>
+    <li>app</li>
+    <li>Plum</li>
+    <li>mango</li>
+</Example>
+
+---
+
+Les caractères `^` et `$` sont souvent utilisés de paire pour s'assurer qu'une expression trouve une correspondance sur une chaîne de caractère complète et non sur une partie de celle-ci.
+
+<Example regex={/^p$/g}>
+    <li>p</li>
+    <li>pi</li>
+    <li>pea</li>
+    <li>tarp</li>
+    <li>apple</li>
+</Example>
+
+Nous pouvons reprendre un des exemples du chapitre [Répétitions](repetition) et ajouter les deux limites :
+
+<Example regex={/^https?$/g}>
+    <li>http</li>
+    <li>https</li>
+    <li>http/2</li>
+    <li>shttp</li>
+    <li>ftp</li>
+</Example>
+
+Sans ajouter ces deux limites, l'expression régulière aurait pu correspondre à `http/2` ou `shttp`.
+
+## Limite de mot — `\b`
+
+`\b` représente tout caractère qui n'est pas un [mot (`\w`)](character-escapes#word-character--w), séparant deux mots.
+
+<Example regex={/\bp/g}>
+    <li>peach</li>
+    <li>banana, peach</li>
+    <li>banana+peach</li>
+    <li>banana-peach</li>
+    <li>banana_peach</li>
+    <li>banana%20peach</li>
+    <li>grape</li>
+</Example>
+
+<Example regex={/\bp\b/g}>
+    <li>word p word</li>
+    <li>(p)</li>
+    <li>p+q+r</li>
+    <li>(paren)</li>
+    <li>(loop)</li>
+    <li>loops</li>
+</Example>
+
+<Example regex={/\bcat\b/g}>
+    <li>cat</li>
+    <li>the cat?</li>
+    <li>catch</li>
+    <li>concat it</li>
+    <li>concatenate</li>
+</Example>
+
+---
+
+Il existe le caractère inverse noté `\B`, représentant tout ce qui est un [mot (`\w`)](character-escapes#word-character--w).
+
+<Example regex={/\Bp/g}>
+    <li>ape</li>
+    <li>leap</li>
+    <li>(leap)</li>
+    <li>a pot</li>
+    <li>pea</li>
+</Example>
+
+<Example regex={/\Bp\B/g}>
+    <li>ape</li>
+    <li>_peel</li>
+    <li>leap</li>
+    <li>(leap)</li>
+    <li>a pot</li>
+    <li>pea</li>
+</Example>
+
+<Tip>
+    <code>^…$</code> et <code>\b…\b</code> sont des caractères couramment utilisés
+    et vous aurez souvent besoin de l'un d'eux pour éviter les correspondances accidentelles.
+</Tip>
+
+
+## Exemples
+
+### Les espaces de fin de ligne
+
+<Example regex={/\s+$/gm}>
+    <li>{"abc   "}</li>
+    <li>{"def \t"}</li>
+    <li>abc def</li>
+</Example>
+
+### Les titres en Markdown
+
+<Example regex={/^## /gm}>
+    <li># Heading 1</li>
+    <li>## Heading 2</li>
+    <li>### Heading 3</li>
+    <li>#### Heading 4</li>
+</Example>
+
+Sans limites :
+
+<Example regex={/## /gm}>
+    <li># Heading 1</li>
+    <li>## Heading 2</li>
+    <li>### Heading 3</li>
+    <li>#### Heading 4</li>
+</Example>
